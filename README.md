@@ -56,7 +56,9 @@ And with all models being records with `{ get; init; }` properties to encourage 
 ## TODO
 
 - Health check endpoints
-- OpenTelemetry
+- OpenTelemetry (instrumentation partially done)
+  - Add docker-compose service to collect telemetry
+  - Add some custom metrics
 - Refine API endpoints
 - Refactor Commands/Events/Models into separate library
 - Source generation of API clients.

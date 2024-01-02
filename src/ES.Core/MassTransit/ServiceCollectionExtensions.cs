@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
 
             mt.UsingRabbitMq((ctx, mq) =>
             {
+                mq.UseConsumeFilter(typeof(TelmetryContextFilter<>), ctx);
                 // TODO - Add exceptions to this
                 mq.UseMessageRetry(r => r.Immediate(1)
                     .Ignore<ValidationException>());

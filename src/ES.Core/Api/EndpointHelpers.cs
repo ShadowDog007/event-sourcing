@@ -3,12 +3,14 @@ using ES.Core.Aggregates.Validation;
 using ES.Core.Messages;
 using ES.Core.Messages.Events;
 using ES.Core.Models;
+using ES.Core.Telemetry;
 using FluentValidation;
 using FluentValidation.Results;
 using Marten;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ES.Core.Api;
 
@@ -51,6 +53,8 @@ public static class EndpointHelpers
         where TState : VersionedModel
         where TCommand : Command
     {
+        Activity.Current?.AddMessageTags(command);
+
         if (command.StreamId != default && command.StreamId != streamId)
         {
             return TypedResults.BadRequest(new AggregateCommandFailedEvent<TCommand>(command, [

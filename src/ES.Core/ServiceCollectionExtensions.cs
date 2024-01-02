@@ -1,6 +1,7 @@
 ﻿using ES.Core.Aggregates;
 using ES.Core.Marten;
 using ES.Core.MassTransit;
+using ES.Core.Telemetry;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +40,8 @@ public static class ServiceCollectionExtensions
         services
             .AddEventSourcingAggregates()
             .AddEventSourcingMarten()
-            .AddEventSourcingMassTransit();
+            .AddEventSourcingMassTransit()
+            .AddEventSourcingTelemetry(environment);
 
         return services;
     }
