@@ -9,6 +9,11 @@ public interface IAggregate
     /// Flag to show if the aggregate stream has been created yet
     /// </summary>
     bool Exists { get; }
+
+    /// <summary>
+    /// Current version of the aggregate
+    /// </summary>
+    long Version { get; }
 }
 
 public interface IAggregate<TState> : IAggregate

@@ -18,5 +18,10 @@ public record Command : Message
     /// </summary>
     public bool ValidationOnly { get; init; }
 
+    /// <summary>
+    /// If set, this command should only apply to streams with a matching version
+    /// </summary>
+    public long? ExpectedVersion { get; init; }
+
     protected Guid? DeterministicStreamId() => null;
 }

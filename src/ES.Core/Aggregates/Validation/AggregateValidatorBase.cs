@@ -17,5 +17,9 @@ public class AggregateValidatorBase<TAggregate, TCommand>
             RuleFor(x => x.Aggregate.Exists)
                 .Equal(true);
         }
+
+        RuleFor(x => x.Command.ExpectedVersion)
+            .Equal(x => x.Aggregate.Version)
+            .When(x => x.Command.ExpectedVersion.HasValue);
     }
 }

@@ -15,6 +15,7 @@ public abstract class AggregateBase<TState> : IAggregate<TState>
 
     public TState? State { get; init; }
     public bool Exists => Stream.StartingVersion > 0;
+    public long Version => Stream.CurrentVersion ?? 0;
 
     public void Append(Event @event) => Stream.AppendOne(@event);
 }
