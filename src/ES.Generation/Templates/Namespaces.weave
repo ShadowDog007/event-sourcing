@@ -1,0 +1,7 @@
+﻿@model TemplateModelBase
+
+{{each n in model.SortedNamespaces}}
+using {{= n }};
+{{/each}}
+
+namespace {{= model.Namespace }};

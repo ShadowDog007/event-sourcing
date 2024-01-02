@@ -1,0 +1,7 @@
+﻿@model AggregateHandlesModel
+
+{{@RenderNamespaces model.WithNamespaces("ES.Core.Aggregates") }}
+
+public partial class {{= model.Name }}
+    : {{each command in model.Commands }}IAggregateHandles<{{= command.Name }}>{{delimit}},
+    {{/each}};

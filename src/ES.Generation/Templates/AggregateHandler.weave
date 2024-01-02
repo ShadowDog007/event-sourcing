@@ -1,0 +1,33 @@
+﻿@model AggregateHandlerModel
+
+{{@RenderNamespaces model.WithNamespaces("System.Threading.Tasks", "ES.Core.Aggregates") }}
+
+public class {{= model.Name }}{{if model.ConstructorParameters.Any()}}(
+        {{each parameter in model.ConstructorParameters }}{{@RenderNamedType parameter.Type }} {{= parameter.Name }}{{delimit}},
+        {{/each}}
+    ){{/if}}
+    : IAggregateHandler<{{= model.Aggregate.Name }}, {{= model.Command.Name }}>
+{
+    public{{if model.HasValidator}} async{{/if}} ValueTask HandleAsync({{= model.Aggregate.Name }} aggregate,
+        {{= model.Command.Name }} command,
+        CancellationToken cancellationToken = default)
+    {
+        {{if model.HasValidator}}
+            await validator.ValidateAndThrowAsync(new ValidationContext<{{= model.Aggregate.Name}}, {{= model.Command.Name}}>(aggregate, command), cancellationToken);
+            {{if model.IsHandlerAwaitable}}
+                await {{= model.MethodCall}};
+            {{else}}
+                {{= model.MethodCall}};
+            {{/if}}
+        {{else}}
+            {{if model.Handler.ReturnType.Name is "Task"}}
+                return new ValueTask({{= model.MethodCall}});
+            {{elif model.Handler.ReturnType.Name is "ValueTask"}}
+                return {{= model.MethodCall}};
+            {{else}}
+                {{= model.MethodCall}};
+                return ValueTask.CompletedTask;
+            {{/if}}
+        {{/if}}
+    }
+}

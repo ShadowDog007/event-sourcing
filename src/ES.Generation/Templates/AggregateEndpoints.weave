@@ -1,0 +1,25 @@
+﻿@model AggregateEndpointsModel
+
+{{@RenderNamespaces model.WithNamespaces("System.Threading.Tasks", "ES.Core.Aggregates", "ES.Core.Api") }}
+
+public static partial class EndpointRouteBuilderExtensions
+{
+    public static RouteGroupBuilder {{= model.MapName}}(this IEndpointRouteBuilder endpoints)
+    {
+        var group = endpoints.MapGroup("/{{= model.Aggregate.Name.Replace("Aggregate", "") }}");
+
+        // Get by stream id
+        group.MapGet("{streamId:guid}", EndpointHelpers.GetAggregateStateAsync<{{= model.Aggregate.Name }}, {{= model.AggregateState.Name }}>);
+
+        // Command endpoints
+        {{each command in model.Commands }}
+            {{if command.AllInterfaces.Any(i => i.Name is "ICommandStartsStream")}}
+                group.MapPost("{{= command.Name}}", EndpointHelpers.CreateStreamAsync<{{= model.Aggregate.Name }}, {{= model.AggregateState.Name }}, {{= command.Name }}>);
+            {{else}}
+                group.MapPut("{streamId:guid}/{{= command.Name}}", EndpointHelpers.AppendToStreamAsync<{{= model.Aggregate.Name }}, {{= model.AggregateState.Name }}, {{= command.Name }}>);
+            {{/if}}
+        {{/each}}
+
+        return group;
+    }
+}

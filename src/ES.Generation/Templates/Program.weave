@@ -1,0 +1,37 @@
+﻿@model ProgramModel
+using ES.Core;
+using {{= model.Namespace}};
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddEventSourcingConfig(builder.Environment);
+
+// Core services
+builder.Services.AddEventSourcingCore(builder.Environment);
+
+// Core Domain services
+builder.Services.Add{{= model.ShortenedName}}AggregateCommandConsumers();
+builder.Services.Add{{= model.ShortenedName}}AggregateCommandHandlers();
+builder.Services.Add{{= model.ShortenedName}}AggregateCommandValidators();
+builder.Services.Add{{= model.ShortenedName}}ProjectionRegistrations();
+
+// {{= model.AddServicesMethods.Length}}
+{{if model.AddServicesMethods.Length > 0}}
+    // Domain services
+    {{each addServices in model.AddServicesMethods}}
+        // {{= addServices.Parameters[0] }} {{= addServices.Parameters[0].Type.Name }} {{= addServices.Parameters[0].IsThis }}
+        builder.Services.{{= addServices.Name}}({{if addServices.Parameters.Length == 2}}builder.Environment{{/if}});
+    {{/each}}
+{{/if}}
+
+var app = builder.Build();
+
+app.UseEventSourcingCore();
+
+{{each mapping in model.EndpointMappings}}
+    app.{{= mapping}}();
+{{/each}}
+
+await app.RunAsync();
+
+public partial class Program;

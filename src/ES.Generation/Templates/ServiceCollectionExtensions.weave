@@ -1,0 +1,15 @@
+﻿@model ServiceCollectionExtensionsModel
+
+{{@RenderNamespaces model.WithNamespaces("Microsoft.Extensions.DependencyInjection")}}
+
+public static partial class ServiceCollectionExtensions
+{
+	public static IServiceCollection {{= model.MethodName }}(this IServiceCollection services)
+	{
+		{{each line in model.Lines}}
+		{{= line}}
+		{{/each}}
+
+		return services;
+	}
+}

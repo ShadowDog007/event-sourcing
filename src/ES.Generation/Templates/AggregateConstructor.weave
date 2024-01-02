@@ -1,0 +1,16 @@
+﻿@model AggregateConstructorModel
+
+{{@RenderNamespaces model.WithNamespaces("ES.Core.Aggregates") }}
+
+public partial class {{= model.Name }}
+    : IAggregateConstructor<{{= model.Name }}, {{= model.StateType.Name }}>
+{
+    public static {{= model.Name }} Create(IEventStream<{{= model.StateType.Name }}> eventStream, {{= model.StateType.Name }}? state)
+    {
+        return new ()
+        {
+            Stream = eventStream,
+            State = state,
+        };
+    }
+}

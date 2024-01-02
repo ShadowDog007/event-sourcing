@@ -1,0 +1,16 @@
+﻿@model ProjectionRegistrationModel
+
+{{@RenderNamespaces model.WithNamespaces("Marten", "Marten.Events.Projections")}}
+
+public partial class {{= model.Name}} : IConfigureMarten
+{
+	/// <summary>
+	/// Registers projections for {{= model.Namespace}}
+	/// </summary>
+	public void Configure(IServiceProvider serviceProvider, StoreOptions options)
+	{
+		{{each projection in model.Projections}}
+			options.Projections.Add<{{= projection.Name}}>(ProjectionLifecycle.Async);
+		{{/each}}
+	}
+}

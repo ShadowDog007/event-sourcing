@@ -1,0 +1,4 @@
+﻿@namespace ES.Generation
+@classname Templates
+@static true
+@accessibility internal

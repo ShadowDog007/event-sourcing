@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <NoWarn>$(NoWarn);CS1574</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Templates\AggregateConstructor.weave" />
+    <None Remove="Templates\AggregateEndpoints.weave" />
+    <None Remove="Templates\AggregateHandler.weave" />
+    <None Remove="Templates\AggregateHandles.weave" />
+    <None Remove="Templates\AutoGenMessage.weave" />
+    <None Remove="Templates\NamedType.weave" />
+    <None Remove="Templates\Namespaces.weave" />
+    <None Remove="Templates\ProjectionRegistrations.weave" />
+    <None Remove="Templates\ServiceCollectionExtensions.weave" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Weave">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <WeaveTemplate Include="Templates\AggregateEndpoints.weave" />
+    <WeaveTemplate Include="Templates\ProjectionRegistrations.weave" />
+    <WeaveTemplate Include="Templates\NamedType.weave" />
+    <WeaveTemplate Include="Templates\AggregateConstructor.weave" />
+    <WeaveTemplate Include="Templates\AggregateHandles.weave" />
+    <WeaveTemplate Include="Templates\AggregateHandler.weave" />
+    <WeaveTemplate Include="Templates\Namespaces.weave" />
+    <WeaveTemplate Include="Templates\AutoGenMessage.weave" />
+    <WeaveTemplate Include="Templates\ServiceCollectionExtensions.weave" />
+    <WeaveTemplate Include="Templates\Program.weave" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,4 @@
+﻿@model INamedTypeSymbol
+@using Microsoft.CodeAnalysis
+
+{{= model.Name }}{{if model.TypeArguments.Length > 0 }}<{{each arg in model.TypeArguments}}{{= arg.Name }}{{delimit}}, {{/each}}>{{/if}}
