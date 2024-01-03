@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using System.Collections.Immutable;
 
 namespace ES.Generation.Symbols;
 

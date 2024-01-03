@@ -4,6 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ES.Domain.Sample.Events;
 
+/// <summary>
+/// Record of an subtraction to Sample
+/// </summary>
 public record SampleValueSubtracted : Event
 {
     public required int Value { get; init; }

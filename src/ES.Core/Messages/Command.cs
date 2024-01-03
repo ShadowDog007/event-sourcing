@@ -1,15 +1,19 @@
 ﻿namespace ES.Core.Messages;
 
+/// <summary>
+/// Request to modify the state of an aggregate
+/// </summary>
 public record Command : Message
 {
     private readonly Guid _streamId;
+    private readonly Guid? _deterministicStreamId;
 
     /// <summary>
     /// The stream this command impacts
     /// </summary>
     public Guid StreamId
     {
-        get => DeterministicStreamId() ?? _streamId;
+        get => _deterministicStreamId ?? _streamId;
         init => _streamId = value;
     }
 
@@ -23,5 +27,15 @@ public record Command : Message
     /// </summary>
     public long? ExpectedVersion { get; init; }
 
-    protected Guid? DeterministicStreamId() => null;
+    /// <summary>
+    /// Creates an 
+    /// </summary>
+    /// <returns>Deterministic stream id based off the properties of this command</returns>
+    protected virtual Guid? DeterministicStreamId() => null;
+
+    public Command()
+    {
+        // Generate the stream ID
+        _deterministicStreamId = DeterministicStreamId();
+    }
 }

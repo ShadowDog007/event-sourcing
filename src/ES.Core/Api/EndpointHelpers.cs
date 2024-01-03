@@ -1,5 +1,4 @@
 ﻿using ES.Core.Aggregates;
-using ES.Core.Aggregates.Validation;
 using ES.Core.Messages;
 using ES.Core.Messages.Events;
 using ES.Core.Models;
@@ -41,7 +40,7 @@ public static class EndpointHelpers
 
     public static async Task<Results<
             Ok<AggregateCommandProcessedEvent>, NotFound,
-            BadRequest<AggregateCommandFailedEvent<TCommand>>
+            BadRequest<CommandValidationFailureEvent<TCommand>>
         >>
         AppendToStreamAsync<TAggregate, TState, TCommand>(
         [FromRoute] Guid streamId, [FromBody] TCommand command,
@@ -57,7 +56,7 @@ public static class EndpointHelpers
 
         if (command.StreamId != default && command.StreamId != streamId)
         {
-            return TypedResults.BadRequest(new AggregateCommandFailedEvent<TCommand>(command, [
+            return TypedResults.BadRequest(new CommandValidationFailureEvent<TCommand>(command, [
                 new ValidationFailure("StreamId", "StreamId property does not match streamId from route")
                 {
                     AttemptedValue = streamId,
@@ -77,7 +76,7 @@ public static class EndpointHelpers
         }
         catch (ValidationException ex)
         {
-            return TypedResults.BadRequest(new AggregateCommandFailedEvent<TCommand>(command, ex.Errors));
+            return TypedResults.BadRequest(new CommandValidationFailureEvent<TCommand>(command, ex.Errors));
         }
 
         if (command.MessageId.ToString()[0] == '5')
@@ -95,7 +94,7 @@ public static class EndpointHelpers
 
     public static Task<Results<
             Ok<AggregateCommandProcessedEvent>, NotFound,
-            BadRequest<AggregateCommandFailedEvent<TCommand>>
+            BadRequest<CommandValidationFailureEvent<TCommand>>
         >>
         CreateStreamAsync<TAggregate, TState, TCommand>(
         [FromBody] TCommand command,

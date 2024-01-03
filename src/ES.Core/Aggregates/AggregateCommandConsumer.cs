@@ -37,7 +37,7 @@ public sealed class AggregateCommandConsumer<TAggregate, TState, TCommand>(
         }
         catch (ValidationException ex)
         {
-            var response = new AggregateCommandFailedEvent<TCommand>(context.Message, ex.Errors);
+            var response = new CommandValidationFailureEvent<TCommand>(context.Message, ex.Errors);
 
             if (context.RequestId is not null)
             {
@@ -59,7 +59,11 @@ public sealed class AggregateCommandConsumer<TAggregate, TState, TCommand>(
         // If command is a request, respond with new version
         if (context.RequestId is not null)
         {
-            await context.RespondAsync(new AggregateCommandProcessedEvent(context.Message, aggregate.Stream.CurrentVersion ?? 1));
+            var response = new AggregateCommandProcessedEvent(context.Message, aggregate.Stream.CurrentVersion ?? 1)
+            {
+                ValidationOnly = context.Message.ValidationOnly,
+            };
+            await context.RespondAsync(response);
         }
     }
 }
