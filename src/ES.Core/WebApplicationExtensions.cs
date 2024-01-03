@@ -1,4 +1,4 @@
-﻿using Marten.Exceptions;
+﻿using ES.Core.Health;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -36,5 +36,7 @@ public static class WebApplicationExtensions
         });
 
         app.MapSwagger().AllowAnonymous();
+
+        app.MapEventSourcingHealthChecks();
     }
 }
