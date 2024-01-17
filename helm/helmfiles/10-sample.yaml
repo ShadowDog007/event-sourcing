@@ -1,0 +1,9 @@
+bases:
+  - bases/environments.yaml
+  - bases/application.yaml
+
+# releases:
+#   - inherit:
+#       - template: application
+#     labels:
+#       application: sample

@@ -1,0 +1,31 @@
+bases:
+  - ./bases/environments.yaml
+  - ./bases/infrastructure.yaml
+
+repositories:
+  - name: linkerd
+    url: https://helm.linkerd.io/stable
+
+releases:
+  - name: linkerd-crds
+    chart: linkerd/linkerd-crds
+    namespace: linkerd
+    labels:
+      crds: true
+    inherit:
+      - template: infrastructure
+  
+  - name: linkerd
+    chart: linkerd/linkerd-control-plane
+    namespace: linkerd
+    inherit:
+      - template: infrastructure
+    {{- if eq .Environment.Name "default" }}
+    set:
+      - name: identityTrustAnchorsPEM
+        file: ../values/linkerd/ca.crt
+      - name: identity.issuer.tls.crtPEM
+        file: ../values/linkerd/issuer.crt
+      - name: identity.issuer.tls.keyPEM
+        file: ../values/linkerd/issuer.key
+    {{- end }}

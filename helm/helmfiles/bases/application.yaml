@@ -1,0 +1,24 @@
+commonLabels:
+  tenant: {{ .Values.tenant }}
+  application: true
+
+templates:
+  application:
+    name: application-{{ .Values.tenant }}-{{`{{ .Release.Labels.application }}`}}
+    chart: charts/application
+    namespace: application-{{ .Values.tenant }}
+    values:
+      - ../values/app-common/values.yaml
+      {{- if isFile "../values/{{`{{ .Release.Labels.application }}`}}/values.yaml" }}
+      - ../values/{{`{{ .Release.Labels.application }}`}}/values.yaml
+      {{- end }}
+      {{- if isFile "../values/{{`{{ .Release.Labels.application }}`}}/{{`{{ .Environment.Name }}`}}.yaml" }}
+      - ../values/{{`{{ .Release.Labels.application }}`}}/{{`{{ .Environment.Name }}`}}.yaml
+      {{- end }}
+    secrets:
+      {{- if isFile "../values/{{`{{ .Release.Labels.application }}`}}/secrets.yaml" }}
+      - ../values/{{`{{ .Release.Labels.application }}`}}/secrets.yaml
+      {{- end }}
+      {{- if isFile "../values/{{`{{ .Release.Labels.application }}`}}/{{`{{ .Environment.Name }}`}}-secrets.yaml" }}
+      - ../values/{{`{{ .Release.Labels.application }}`}}/{{`{{ .Environment.Name }}`}}-secrets.yaml
+      {{- end }}

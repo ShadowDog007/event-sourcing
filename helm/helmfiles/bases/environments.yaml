@@ -1,0 +1,10 @@
+environments:
+  default:
+    values:
+      - ../values/default.yaml
+  test:
+    values:
+      - ../values/test.yaml
+  production:
+    values:
+      - ../values/production.yaml

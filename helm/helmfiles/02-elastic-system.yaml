@@ -1,0 +1,24 @@
+bases:
+  - ./bases/environments.yaml
+  - ./bases/infrastructure.yaml
+
+repositories:
+  - name: elastic
+    url: https://helm.elastic.co
+
+releases:
+  - name: elastic-operator
+    namespace: elastic-operator
+    chart: elastic/eck-operator
+    labels:
+      crds: true
+    inherit:
+      - template: infrastructure
+
+  - name: elastic-system
+    namespace: elastic-system
+    chart: ../charts/elastic-system
+    needs:
+      - elastic-operator/elastic-operator
+    inherit:
+      - template: infrastructure
