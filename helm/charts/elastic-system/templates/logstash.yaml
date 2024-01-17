@@ -1,0 +1,22 @@
+apiVersion: logstash.k8s.elastic.co/v1alpha1
+kind: Logstash
+metadata:
+  name: elastic-system
+  namespace: elastic-system
+spec:
+  version: 8.11.4
+  count: 1
+  elasticsearchRefs:
+  - name: elastic-system
+    clusterName: elastic
+  configRef:
+    secretName: logstash-config
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logstash-config
+stringData:
+  logstash.yml: |-
+    pipeline.workers: 4
+    log.level: debug

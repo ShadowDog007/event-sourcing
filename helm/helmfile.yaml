@@ -1,0 +1,110 @@
+repositories:
+  - name: elastic
+    url: https://helm.elastic.co
+  - name: portainer
+    url: https://portainer.github.io/k8s
+  - name: linkerd
+    url: https://helm.linkerd.io/stable
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+
+environments:
+  default:
+    values:
+      - values/default.yaml
+  test:
+    values:
+      - values/test.yaml
+  production:
+    values:
+      - values/production.yaml
+
+templates:
+  application:
+    name: application-{{`{{ requiredEnv "ES_TENANT" }}`}}-{{`{{ . }}`}}
+    chart: charts/application
+    namespace: application-{{`{{ requiredEnv "ES_TENANT" }}`}}
+    labels:
+      application: true
+    values:
+    - values/common/application.yaml.gotmpl
+    - values/{{`{{ .Release.Name }}`}}/values.yaml.gotmpl
+    - values/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}.yaml.gotmpl
+    secrets:
+    - values/{{`{{ .Release.Name }}`}}/secrets.yaml
+    - values/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}-secrets.yaml
+
+  infrastructure:
+    labels:
+      infrastructure: true
+    values:
+    - values/{{`{{ .Release.Name }}`}}/values.yaml.gotmpl
+    - values/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}.yaml.gotmpl
+    secrets:
+    - values/{{`{{ .Release.Name }}`}}/secrets.yaml
+    - values/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}-secrets.yaml
+
+releases:
+  # Administration
+  - name: portainer
+    namespace: administration
+    chart: portainer/portainer
+    inherit:
+      - template: infrastructure
+  
+  # Linkerd
+  - name: linkerd-crds
+    chart: linkerd/linkerd-crds
+    namespace: linkerd
+    labels:
+      crds: true
+    inherit:
+      - template: infrastructure
+  
+  - name: linkerd
+    chart: linkerd/linkerd-control-plane
+    namespace: linkerd
+    inherit:
+      - template: infrastructure
+    set:
+      - name: identityTrustAnchorsPEM
+        file: ca.crt
+      - name: identity.issuer.tls.crtPEM
+        file: issuer.crt
+      - name: identity.issuer.tls.keyPEM
+        file: issuer.key
+
+  # Elastic
+
+  - name: elastic-operator
+    namespace: elastic-operator
+    chart: elastic/eck-operator
+    labels:
+      crds: true
+    inherit:
+      - template: infrastructure
+
+  - name: elastic-system
+    namespace: elastic-system
+    chart: ./charts/elastic-system
+    needs:
+      - elastic-operator/elastic-operator
+      - linkerd/linkerd
+    inherit:
+      - template: infrastructure
+
+  # Postgres
+  - name: postgres
+    namespace: postgres
+    chart: bitnami/postgresql
+    inherit:
+      - template: infrastructure
+    # values:
+    #   - ./values/common/postgres.yaml.gotmpl
+
+  # Applications
+  # - name: app-sample
+  #   namespace: application
+  #   chart: ./charts/application
+  #   inherit:
+  #     - template: application

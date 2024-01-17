@@ -1,0 +1,10 @@
+eck-operator: {}
+
+production: false
+development: true
+
+masterNodes: 3
+dataNodes: 3
+coordinatorNodes: 3
+
+dataNodeSize: 10Gi
