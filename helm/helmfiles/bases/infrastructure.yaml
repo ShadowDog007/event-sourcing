@@ -3,19 +3,11 @@ commonLabels:
 
 templates:
   infrastructure:
-    labels:
-      infrastructure: true
+    condition: common.enabled # Exclude infrastructure for tenants
+    missingFileHandler: Warn
     values:
-    {{- if isFile "../values/{{`{{ .Release.Name }}`}}/values.yaml" }}
     - ../values/{{`{{ .Release.Name }}`}}/values.yaml
-    {{- end }}
-    {{- if isFile "../values/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}.yaml" }}
     - ../values/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}.yaml
-    {{- end }}
     secrets:
-    {{- if isFile "../values/{{`{{ .Release.Name }}`}}/secrets.yaml" }}
     - ../values/{{`{{ .Release.Name }}`}}/secrets.yaml
-    {{- end }}
-    {{- if isFile "../values/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}-secrets.yaml" }}
     - ../values/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}-secrets.yaml
-    {{- end }}

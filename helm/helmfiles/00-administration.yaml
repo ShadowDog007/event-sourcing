@@ -1,6 +1,6 @@
 bases:
-  - ./bases/environments.yaml
-  - ./bases/infrastructure.yaml
+  - bases/environments.yaml
+  - bases/infrastructure.yaml
 
 repositories:
   - name: portainer

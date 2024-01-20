@@ -1,10 +1,19 @@
 environments:
   default:
     values:
-      - ../values/default.yaml
+      - ../environments/development/values.yaml
+      {{- if not .StateValues.isCommon }}
+      - ../environments/development/{{ .StateValues.tenant }}.yaml
+      {{- end }}
   test:
     values:
-      - ../values/test.yaml
+      - ../environments/test/values.yaml
+      {{- if not .StateValues.isCommon }}
+      - ../environments/test/{{ .StateValues.tenant }}.yaml
+      {{- end }}
   production:
     values:
-      - ../values/production.yaml
+      - ../environments/production/values.yaml
+      {{- if not .StateValues.isCommon }}
+      - ../environments/production/{{ .StateValues.tenant }}.yaml
+      {{- end }}

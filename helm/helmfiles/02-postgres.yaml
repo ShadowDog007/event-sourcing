@@ -1,7 +1,7 @@
 bases:
   - ./bases/environments.yaml
   - ./bases/infrastructure.yaml
-
+---
 repositories:
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
@@ -10,6 +10,10 @@ releases:
   # Postgres
   - name: postgres
     namespace: postgres
+    {{- if .StateValues.postgres.standalone }}
+    # In some environments standalone postgres servers may be required
+    condition: postgres.standalone
+    {{- end }}
     chart: bitnami/postgresql
     inherit:
       - template: infrastructure

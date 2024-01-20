@@ -1,0 +1,7 @@
+helmfiles:
+  - path: ./helmfiles/0?-*.yaml
+    values:
+      - tenant: common
+        isCommon: true
+        common:
+          enabled: true

@@ -1,0 +1,5 @@
+# For local environments:
+# - use a standalone instance
+# - a static password
+architecture: standalone
+auth.postgresPassword: pass@word1

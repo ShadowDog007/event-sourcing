@@ -1,0 +1,7 @@
+helmfiles:
+  - path: ./helmfiles/*.yaml
+    values:
+      - tenant: {{ requiredEnv "ES_TENANT" }}
+        isCommon: true
+        common:
+          enabled: false

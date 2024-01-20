@@ -1,9 +1,4 @@
-{{- if eq .Values.environment "development" }}
-architecture: standalone
-auth.postgresPassword: pass@word1
-{{- else }}
 architecture: replication
-{{- end }}
 
 tls:
   enabled: true

@@ -1,2 +1,4 @@
-environment: production
 containerRegistry: https://aws_account_id.dkr.ecr.ap-southeast-2.amazonaws.com/
+
+postgres:
+  standalone: false
